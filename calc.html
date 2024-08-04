@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>해외 주식 손익 계산기</title>
+    <style>
+        .purchase-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>해외 주식 손익 계산기</h1>
+    <form id="profitCalculator">
+        <div id="purchaseContainer">
+            <div class="purchase-group">
+                <label for="purchasePrice1">매수 단가 (달러):</label>
+                <input type="number" id="purchasePrice1" step="0.01" placeholder="예: 10">
+                <label for="purchaseAmount1">매수 주식 수:</label>
+                <input type="number" id="purchaseAmount1" placeholder="예: 1000">
+                <label for="purchaseRate1">매수 당시 환율 (원):</label>
+                <input type="number" id="purchaseRate1" step="0.01" placeholder="예: 1300">
+            </div>
+        </div>
+        <button type="button" onclick="addPurchase()">추가 매수</button>
+        <div>
+            <label for="finalAmount">환전된 원화 금액 (원):</label>
+            <input type="number" id="finalAmount" step="0.01" placeholder="예: 27962689">
+        </div>
+        <button type="button" onclick="calculateProfit()">계산하기</button>
+    </form>
+    <h2 id="actualProfit">실제 수익: </h2>
+
+    <script>
+        let purchaseCount = 1;
+
+        function addPurchase() {
+            purchaseCount++;
+            const container = document.getElementById('purchaseContainer');
+            const div = document.createElement('div');
+            div.className = 'purchase-group';
+            div.innerHTML = `
+                <label for="purchasePrice${purchaseCount}">매수 단가 (달러):</label>
+                <input type="number" id="purchasePrice${purchaseCount}" step="0.01" placeholder="예: 10">
+                <label for="purchaseAmount${purchaseCount}">매수 주식 수:</label>
+                <input type="number" id="purchaseAmount${purchaseCount}" placeholder="예: 1000">
+                <label for="purchaseRate${purchaseCount}">매수 당시 환율 (원):</label>
+                <input type="number" id="purchaseRate${purchaseCount}" step="0.01" placeholder="예: 1300">
+            `;
+            container.appendChild(div);
+        }
+
+        function calculateProfit() {
+            let totalPurchase = 0;
+            for (let i = 1; i <= purchaseCount; i++) {
+                const purchasePrice = parseFloat(document.getElementById(`purchasePrice${i}`).value);
+                const purchaseAmount = parseInt(document.getElementById(`purchaseAmount${i}`).value);
+                const purchaseRate = parseFloat(document.getElementById(`purchaseRate${i}`).value);
+                totalPurchase += purchasePrice * purchaseAmount * purchaseRate;
+            }
+
+            const finalAmount = parseFloat(document.getElementById('finalAmount').value);
+
+            // 실제 수익 계산
+            const actualProfit = finalAmount - totalPurchase;
+
+            // 결과 표시
+            document.getElementById('actualProfit').innerText = `실제 수익: ${actualProfit.toLocaleString()}원`;
+        }
+    </script>
+</body>
+</html>
